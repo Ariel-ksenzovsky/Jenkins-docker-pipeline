@@ -36,12 +36,12 @@ pipeline {
                 branch 'main'  // Only push Docker image when on 'main' branch
             }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                    sh """
-                    docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
-                    """
+                   withCredentials([string(credentialsId: env.DOCKER_TOKEN_ID, variable: 'DOCKER_TOKEN')]) {
+                        sh """
+                        echo "$DOCKER_TOKEN" | docker login -u arielk2511 --password-stdin
+                        docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
+                        docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
+                        """
                 }
             }
         }
