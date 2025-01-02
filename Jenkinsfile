@@ -47,7 +47,6 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    cd ariel-devops/Flask/mysql-task
                     docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest} .
                     docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag} .
                     docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
