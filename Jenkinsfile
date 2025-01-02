@@ -24,7 +24,7 @@ pipeline {
                     
                     // Build Docker image with tags
                     sh """
-                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag} -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest} .
+                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag} -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest .
                     """
                 }
             }
