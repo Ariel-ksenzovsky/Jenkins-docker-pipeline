@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_USERNAME = 'arielk2511'  // Replace with your Docker Hub username
-        DOCKER_PASSWORD = credentials('docker-hub-token')  // Jenkins Docker Hub credentials
+        DOCKER_PASSWORD = 'docker-hub-token'  // Jenkins Docker Hub credentials
         DOCKER_IMAGE = 'weather-app'
         GITHUB_REPO = 'https://github.com/Ariel-ksenzovsky/mini-project.git'  // Replace with your GitHub repository name (e.g., 'username/repo')
         GITHUB_TOKEN = credentials('github-token')  // GitHub credentials for PR creation
