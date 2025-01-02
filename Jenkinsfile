@@ -19,12 +19,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def build_number = "${env.BUILD_NUMBER}"
-                    def version_tag = "0.0.${build_number}"
-                    
                     // Build Docker image with tags
                     sh """
-                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag} -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest .
+                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUM} -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest .
                     """
                 }
             }
@@ -47,9 +44,9 @@ pipeline {
                 script {
                     sh '''
                     docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest .
-                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag} .
+                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUM} .
                     docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
+                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUM}
                     '''
                 }
             }
