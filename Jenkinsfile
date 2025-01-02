@@ -2,17 +2,17 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = 'arielk2511'  // Replace with your Docker Hub username
-        DOCKER_PASSWORD = credentials('docker-hub-token')  // Use Jenkins credentials to fetch Docker Hub password/token
+        DOCKER_USERNAME = 'arielk2511'
+        DOCKER_PASSWORD = credentials('docker-hub-token')  // Fetch Docker Hub credentials directly here
         DOCKER_IMAGE = 'weather-app'
-        GITHUB_REPO = 'Ariel-ksenzovsky/mini-project'  // Correct GitHub repo format (username/repo)
-        GITHUB_TOKEN = credentials('github-token')  // GitHub credentials for PR creation
+        GITHUB_REPO = 'Ariel-ksenzovsky/mini-project'
+        GITHUB_TOKEN = credentials('github-token')
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                checkout scm  // Checkout the code from the GitHub repository
+                checkout scm
             }
         }
 
@@ -33,28 +33,27 @@ pipeline {
 
         stage('Push Docker Image') {
             when {
-                branch 'main'  // Only push Docker image when on 'main' branch
+                branch 'main'
             }
             steps {
-                withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_TOKEN')]) {
-                    sh """
-                    echo "$DOCKER_TOKEN" | docker login -u ${DOCKER_USERNAME} --password-stdin
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
-                    """
-                }
+                // No need for withCredentials, since DOCKER_PASSWORD is already defined in the environment block
+                sh """
+                echo "$DOCKER_PASSWORD" | docker login -u ${DOCKER_USERNAME} --password-stdin
+                docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
+                docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
+                """
             }
         }
 
         stage('Create PR to Main') {
             when {
                 not {
-                    branch 'main'  // Only create PR if the branch is not 'main'
+                    branch 'main'
                 }
             }
             steps {
                 script {
-                    // Create a PR using GitHub API (via curl)
+                    // Disable sandbox to allow the curl command
                     sh """
                     curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
                     -d '{"title": "Merge feature branch to main", "head": "${env.BRANCH_NAME}", "base": "main"}' \
