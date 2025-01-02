@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_USERNAME = 'arielk2511'
-        DOCKER_PASSWORD = credentials('docker-hub-token')  // Fetch Docker Hub credentials directly here
+        DOCKER_PASSWORD = 'docker-hub-token'  // Fetch Docker Hub credentials directly here
         DOCKER_IMAGE = 'weather-app'
         GITHUB_REPO = 'Ariel-ksenzovsky/mini-project'
         GITHUB_TOKEN = credentials('github-token')
@@ -36,9 +36,9 @@ pipeline {
                 branch 'main'
             }
             steps {
-                // No need for withCredentials, since DOCKER_PASSWORD is already defined in the environment block
+                withCredentials([string(credentialsId: env.DOCKER_PASSWORD, variable: 'DOCKER_TOKEN')]) {
                 sh """
-                echo "$DOCKER_PASSWORD" | docker login -u ${DOCKER_USERNAME} --password-stdin
+                echo "$DOCKER_TOKEN" | docker login -u ${DOCKER_USERNAME} --password-stdin
                 docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
                 docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
                 """
