@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_USERNAME = 'arielk2511'
-        DOCKER_PASSWORD = 'docker-hub-token'  // Fetch Docker Hub credentials directly here
+        DOCKER_TOKEN_ID = 'docker-hub-token'  // Fetch Docker Hub credentials directly here
         DOCKER_IMAGE = 'weather-app'
         GITHUB_REPO = 'Ariel-ksenzovsky/mini-project'
         GITHUB_TOKEN = credentials('github-token')
@@ -31,17 +31,28 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
-            when {
-                branch 'main'
-            }
+        stage('Docker Login') {
             steps {
-                withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_TOKEN')]) {
-                    sh """
-                    echo "$DOCKER_TOKEN" | docker login -u ${DOCKER_USERNAME} --password-stdin
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
-                    """
+                script {
+                    withCredentials([string(credentialsId: env.DOCKER_TOKEN_ID, variable: 'DOCKER_TOKEN')]) {
+                        sh """
+                        echo "$DOCKER_TOKEN" | docker login -u arielk2511 --password-stdin
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    sh '''
+                    cd ariel-devops/Flask/mysql-task
+                    docker build -t ${DOCKER_IMAGE}:latest .
+                    docker build -t ${DOCKER_IMAGE}:2.0.${BUILD_NUM} .
+                    docker push ${DOCKER_IMAGE}:latest
+                    docker push ${DOCKER_IMAGE}:2.0.${BUILD_NUM}
+                    '''
                 }
             }
         }
