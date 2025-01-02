@@ -48,10 +48,10 @@ pipeline {
                 script {
                     sh '''
                     cd ariel-devops/Flask/mysql-task
-                    docker build -t ${DOCKER_IMAGE}:latest .
-                    docker build -t ${DOCKER_IMAGE}:2.0.${BUILD_NUM} .
-                    docker push ${DOCKER_IMAGE}:latest
-                    docker push ${DOCKER_IMAGE}:2.0.${BUILD_NUM}
+                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest} .
+                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag} .
+                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
+                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
                     '''
                 }
             }
