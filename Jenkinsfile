@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         DOCKER_USERNAME = 'arielk2511'  // Replace with your Docker Hub username
-        DOCKER_PASSWORD = 'docker-hub-token'  // Jenkins Docker Hub credentials
+        DOCKER_PASSWORD = credentials('docker-hub-token')  // Use Jenkins credentials to fetch Docker Hub password/token
         DOCKER_IMAGE = 'weather-app'
-        GITHUB_REPO = 'https://github.com/Ariel-ksenzovsky/mini-project.git'  // Replace with your GitHub repository name (e.g., 'username/repo')
+        GITHUB_REPO = 'Ariel-ksenzovsky/mini-project'  // Correct GitHub repo format (username/repo)
         GITHUB_TOKEN = credentials('github-token')  // GitHub credentials for PR creation
     }
 
@@ -36,12 +36,12 @@ pipeline {
                 branch 'main'  // Only push Docker image when on 'main' branch
             }
             steps {
-                   withCredentials([string(credentialsId: env.DOCKER_TOKEN_ID, variable: 'DOCKER_TOKEN')]) {
-                        sh """
-                        echo "$DOCKER_TOKEN" | docker login -u arielk2511 --password-stdin
-                        docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
-                        docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
-                        """
+                withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_TOKEN')]) {
+                    sh """
+                    echo "$DOCKER_TOKEN" | docker login -u ${DOCKER_USERNAME} --password-stdin
+                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
+                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
+                    """
                 }
             }
         }
