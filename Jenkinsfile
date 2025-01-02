@@ -21,7 +21,7 @@ pipeline {
                 script {
                     // Build Docker image with tags
                     sh """
-                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUM} -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest .
+                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER} -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest .
                     """
                 }
             }
@@ -44,9 +44,9 @@ pipeline {
                 script {
                     sh '''
                     docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest .
-                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUM} .
+                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER} .
                     docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUM}
+                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
                     '''
                 }
             }
