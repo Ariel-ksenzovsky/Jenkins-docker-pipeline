@@ -21,7 +21,6 @@ pipeline {
                 script {
                     def build_number = "${env.BUILD_NUMBER}"
                     def version_tag = "0.0.${build_number}"
-                    def image_tag_latest = "latest"
                     
                     // Build Docker image with tags
                     sh """
@@ -47,9 +46,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest} .
+                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest .
                     docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag} .
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${image_tag_latest}
+                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
                     docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:${version_tag}
                     '''
                 }
