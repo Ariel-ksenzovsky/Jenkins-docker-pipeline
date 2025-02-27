@@ -42,7 +42,9 @@ This repository contains a `Jenkinsfile` defining the CI/CD process:
 Jenkins-docker-pipeline/
 │── Dockerfile         # Defines the containerized application
 │── Jenkinsfile        # Defines the CI/CD pipeline
-│── src/               # Application source code (if applicable)
+│── src/               # Application source code
+│   ├── main.py        # Main application logic (if applicable)
+│   ├── templates/     # HTML or configuration templates
 │── tests/             # Test scripts (if applicable)
 │── README.md          # Project documentation
 ```
@@ -53,6 +55,7 @@ If required, configure the following environment variables in Jenkins:
 DOCKERHUB_USERNAME=<your_dockerhub_username>
 DOCKERHUB_PASSWORD=<your_dockerhub_password>
 IMAGE_NAME=<your_image_name>
+GITHUB_TOKEN=<your_github_token>
 ```
 
 ## Contributing
