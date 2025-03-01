@@ -27,17 +27,6 @@ pipeline {
             }
         }
 
-        stage('Docker Login') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: env.DOCKER_TOKEN_ID, variable: 'DOCKER_TOKEN')]) {
-                        sh """
-                        echo "$DOCKER_TOKEN" | docker login -u arielk2511 --password-stdin
-                        """
-                    }
-                }
-            }
-        }
 
         stage('Build and Push Docker Image') {
             steps {
@@ -69,7 +58,57 @@ pipeline {
                 }
             }
         }
+
+        stage('Docker Login') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: env.DOCKER_TOKEN_ID, variable: 'DOCKER_TOKEN')]) {
+                        sh """
+                        echo "$DOCKER_TOKEN" | docker login -u arielk2511 --password-stdin
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    sh """
+                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
+                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
+                    """
+                }
+            }
+        }
+
+        stage('Deploy to instance via terraform') {
+            steps {
+                script {
+                    sh """
+                    cd terraform
+                    terraform init
+                    terraform apply -auto-approve
+                    """
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    sh """
+                    docker rmi ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
+                    docker rmi ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
+                    """
+                }
+            }
+        }
+        
     }
+
+    
+
 
     post {
         success {
