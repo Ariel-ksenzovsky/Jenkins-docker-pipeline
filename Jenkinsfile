@@ -52,7 +52,7 @@ pipeline {
     }
     steps {
         script {
-            withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'TOKEN')]) {
+            withCredentials([string(credentialsId: env.GITHUB_TOKEN, variable: 'TOKEN')]) {
                 sh '''
                 curl -X POST -H "Authorization: token $TOKEN" \
                      -H "Accept: application/vnd.github.v3+json" \
