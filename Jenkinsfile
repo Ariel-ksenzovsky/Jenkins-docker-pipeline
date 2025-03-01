@@ -32,7 +32,7 @@ pipeline {
                 script {
                     // Run tests
                     sh """
-                    ansible-playbook /var/lib/jenkins/workspace/mini-project/AWS-docker-pipeline/ansible-flask-app-ec2.yml
+                    docker run -d -p 5000:5000 ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
                     docker compose up -d  # Start containers
                     echo "Waiting for application to start..."
                     until curl --fail --max-time 120 http://localhost:5000; do
