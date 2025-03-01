@@ -110,6 +110,7 @@ pipeline {
             steps {
                 script {
                     sh """
+                    docker rm -f weather-app/${BUILD_NUMBER}
                     docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
                     docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
                     """
