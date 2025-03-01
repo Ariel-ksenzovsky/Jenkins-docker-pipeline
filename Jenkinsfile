@@ -45,22 +45,25 @@ pipeline {
         }  
 
         stage('Create PR to Main') {
-            when {
-                not {
-                    branch 'main'
-                }
-            }
-            steps {
-                script {
-                    // Disable sandbox to allow the curl command
-                    sh """
-                    curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
-                    -d '{"title": "Merge feature branch to main", "head": "${env.BRANCH_NAME}", "base": "main"}' \
-                    https://api.github.com/repos/${GITHUB_REPO}/pulls
-                    """
-                }
+    when {
+        not { 
+            branch 'main'
+        }
+    }
+    steps {
+        script {
+            withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'TOKEN')]) {
+                sh '''
+                curl -X POST -H "Authorization: token $TOKEN" \
+                     -H "Accept: application/vnd.github.v3+json" \
+                     -d '{"title": "Merge feature branch to main", "head": "'"$BRANCH_NAME"'", "base": "main"}' \
+                     https://api.github.com/repos/Ariel-ksenzovsky/Jenkins-docker-pipeline/pulls
+                '''
             }
         }
+    }
+}
+
 
         stage('Docker Login') {
             when {
