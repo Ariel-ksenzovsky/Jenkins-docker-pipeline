@@ -27,19 +27,22 @@ pipeline {
             }
         }
 
-
-        stage('Build and Push Docker Image') {
+        stage('Run Tests') {
             steps {
                 script {
-                    sh '''
-                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest .
-                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER} .
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
-                    '''
+                    // Run tests
+                    sh """
+                    docker run -d -p 5000:5000 ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
+                    echo "Waiting for application to start..."
+                    until curl --fail --max-time 120 http://localhost:5000; do
+                        echo "Waiting for application to start..."
+                        sleep 5
+                    done
+                    echo "Application started successfully!"
+                    """
                 }
             }
-        }
+        }  
 
         stage('Create PR to Main') {
             when {
@@ -60,6 +63,9 @@ pipeline {
         }
 
         stage('Docker Login') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     withCredentials([string(credentialsId: env.DOCKER_TOKEN_ID, variable: 'DOCKER_TOKEN')]) {
@@ -72,6 +78,9 @@ pipeline {
         }
 
         stage('Push to Docker Hub') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     sh """
@@ -83,6 +92,9 @@ pipeline {
         }
 
         stage('Deploy to instance via terraform') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     sh """
@@ -98,8 +110,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker rmi ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
-                    docker rmi ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
+                    docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
+                    docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
                     """
                 }
             }
