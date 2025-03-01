@@ -6,7 +6,7 @@ pipeline {
         DOCKER_TOKEN_ID = 'docker-hub-token'  // Fetch Docker Hub credentials directly here
         DOCKER_IMAGE = 'weather-app'
         GITHUB_REPO = 'Ariel-ksenzovsky/Jenkins-docker-pipeline'
-        GITHUB_TOKEN = credentials('github-token')
+        GITHUB_TOKEN = 'github-token'
     }
 
     stages {
