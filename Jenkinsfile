@@ -113,7 +113,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker rm -f weather-app/${BUILD_NUMBER}
+                    docker rm -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
+                    docker rm -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
                     docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
                     docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
                     """
@@ -128,10 +129,10 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline completed successfully!"
+            echo "Pipeline completed successfully!!"
         }
         failure {
-            echo "Pipeline failed!"
+            echo "Pipeline failed!!"
         }
     }
 }
