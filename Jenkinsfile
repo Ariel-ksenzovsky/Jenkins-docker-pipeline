@@ -33,7 +33,6 @@ pipeline {
                     // Run tests
                     sh """
                     docker run -d -p 5000:5000 ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
-                    docker compose up -d  # Start containers
                     echo "Waiting for application to start..."
                     until curl --fail --max-time 120 http://localhost:5000; do
                         echo "Waiting for application to start..."
