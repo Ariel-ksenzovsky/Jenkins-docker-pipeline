@@ -113,7 +113,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker rm -f ${docker ps -a -q}
+                    docker rm -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
+                    docker rm -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
                     docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
                     docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
                     """
