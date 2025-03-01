@@ -110,8 +110,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker rmi ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
-                    docker rmi ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
+                    docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
+                    docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
                     """
                 }
             }
