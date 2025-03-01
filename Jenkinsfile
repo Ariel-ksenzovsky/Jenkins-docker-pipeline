@@ -60,6 +60,9 @@ pipeline {
         }
 
         stage('Docker Login') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     withCredentials([string(credentialsId: env.DOCKER_TOKEN_ID, variable: 'DOCKER_TOKEN')]) {
@@ -72,6 +75,9 @@ pipeline {
         }
 
         stage('Push to Docker Hub') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     sh """
@@ -83,6 +89,9 @@ pipeline {
         }
 
         stage('Deploy to instance via terraform') {
+            when {
+                branch 'main'
+            }
             steps {
                 script {
                     sh """
