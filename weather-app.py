@@ -18,7 +18,7 @@ def home():
             }
 
     winter_facts = [
-        "Snowflakes are unique, no two are exactly alike!",
+        "Snowflakes are unique, no two are exactly alike!!",
         "The coldest temperature ever recorded was -128.6°F in Antarctica.",
         "Some animals, like bears, hibernate during winter to conserve energy.",
         "Winter is caused by the Earth's tilt, not its distance from the sun."
