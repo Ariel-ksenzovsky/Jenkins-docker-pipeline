@@ -6,7 +6,7 @@ pipeline {
         DOCKER_TOKEN_ID = 'docker-hub-token'  // Fetch Docker Hub credentials directly here
         DOCKER_IMAGE = 'weather-app'
         GITHUB_REPO = 'Ariel-ksenzovsky/Jenkins-docker-pipeline'
-        GITHUB_TOKEN = credentials('github-token')
+        GITHUB_TOKEN = 'github-token'
     }
 
     stages {
@@ -45,22 +45,25 @@ pipeline {
         }  
 
         stage('Create PR to Main') {
-            when {
-                not {
-                    branch 'main'
-                }
-            }
-            steps {
-                script {
-                    // Disable sandbox to allow the curl command
-                    sh """
-                    curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
-                    -d '{"title": "Merge feature branch to main", "head": "${env.BRANCH_NAME}", "base": "main"}' \
-                    https://api.github.com/repos/${GITHUB_REPO}/pulls
-                    """
-                }
+    when {
+        not { 
+            branch 'main'
+        }
+    }
+    steps {
+        script {
+            withCredentials([string(credentialsId: env.GITHUB_TOKEN, variable: 'TOKEN')]) {
+                sh '''
+                curl -X POST -H "Authorization: token $TOKEN" \
+                     -H "Accept: application/vnd.github.v3+json" \
+                     -d '{"title": "Merge feature branch to main", "head": "'"$BRANCH_NAME"'", "base": "main"}' \
+                     https://api.github.com/repos/Ariel-ksenzovsky/Jenkins-docker-pipeline/pulls
+                '''
             }
         }
+    }
+}
+
 
         stage('Docker Login') {
             when {
@@ -110,6 +113,7 @@ pipeline {
             steps {
                 script {
                     sh """
+                    docker rm -f weather-app/${BUILD_NUMBER}
                     docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
                     docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
                     """
