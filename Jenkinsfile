@@ -27,19 +27,23 @@ pipeline {
             }
         }
 
-
-        stage('Build and Push Docker Image') {
+        stage('Run Tests') {
             steps {
                 script {
-                    sh '''
-                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest .
-                    docker build -t ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER} .
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
-                    docker push ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
-                    '''
+                    // Run tests
+                    sh """
+                    ansible-playbook /var/lib/jenkins/workspace/mini-project/AWS-docker-pipeline/ansible-flask-app-ec2.yml
+                    docker compose up -d  # Start containers
+                    echo "Waiting for application to start..."
+                    until curl --fail --max-time 120 http://localhost:5000; do
+                        echo "Waiting for application to start..."
+                        sleep 5
+                    done
+                    echo "Application started successfully!"
+                    """
                 }
             }
-        }
+        }  
 
         stage('Create PR to Main') {
             when {
