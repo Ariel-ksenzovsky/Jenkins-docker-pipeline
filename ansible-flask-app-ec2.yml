@@ -4,10 +4,8 @@
   become: true
 
   vars:
-    docker_compose_version: "1.29.2"
     repo_url: "https://github.com/Ariel-ksenzovsky/Jenkins-docker-pipeline.git"
     s3_bucket: "my-bucket101110101"
-    s3_env_path: "configs/.env"
 
   tasks:
     - name: Update all packages
@@ -20,7 +18,6 @@
         name:
           - git
           - docker
-          - libxcrypt-compat
         state: present
 
     - name: Start and enable Docker service
@@ -43,6 +40,6 @@
 
     - name: Run Docker Compose to start the application
       shell: |
-        docker run -d --name flask-app -p 5000:5000
+        docker run -d arielk2511/weather-app --name flask-app -p 5000:5000
       args:
         chdir: /home/ec2-user/Jenkins-docker-pipeline
