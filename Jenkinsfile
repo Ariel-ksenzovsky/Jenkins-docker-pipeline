@@ -57,7 +57,7 @@ pipeline {
                 sh '''
                 curl -X POST -H "Authorization: token $TOKEN" \
                      -H "Accept: application/vnd.github.v3+json" \
-                     -d '{"title": "Merge feature branch to main", "head": "'"$BRANCH_NAME"'", "base": "main"}' \
+                     -d '{"title": "Merge debug branch to main", "head": "'"$BRANCH_NAME"'", "base": "main"}' \
                      https://api.github.com/repos/Ariel-ksenzovsky/Jenkins-docker-pipeline/pulls
                 '''
             }
@@ -110,24 +110,22 @@ pipeline {
             }
         }
 
-        stage('Cleanup') {
-            steps {
-                script {
-                    sh """
-                    docker rm -f ${container_name}
-                    docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
-                    docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
-                    """
-                }
-            }
-        }
-        
     }
 
     
 
 
     post {
+        always {
+            script {
+                    sh """
+                    docker rm -f ${container_name}
+                    docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
+                    docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
+                    """
+                }
+        }
+
         success {
             echo "Pipeline completed successfully!!"
         }
