@@ -7,6 +7,7 @@ pipeline {
         DOCKER_IMAGE = 'weather-app'
         GITHUB_REPO = 'Ariel-ksenzovsky/Jenkins-docker-pipeline'
         GITHUB_TOKEN = 'github-token'
+        container_name = 'weather-app'
     }
 
     stages {
@@ -32,7 +33,7 @@ pipeline {
                 script {
                     // Run tests
                     sh """
-                    docker run -d -p 5000:5000 ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
+                    docker run -d --name ${container_name} -p 5000:5000 ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
                     echo "Waiting for application to start..."
                     until curl --fail --max-time 120 http://localhost:5000; do
                         echo "Waiting for application to start..."
@@ -113,8 +114,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker rm -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
-                    docker rm -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
+                    docker rm -f ${container_name}
                     docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:latest
                     docker rmi -f ${DOCKER_USERNAME}/${DOCKER_IMAGE}:0.0.${BUILD_NUMBER}
                     """
