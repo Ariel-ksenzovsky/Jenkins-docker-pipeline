@@ -38,7 +38,7 @@
         dest: /home/ec2-user/Jenkins-docker-pipeline
         version: HEAD
 
-    - name: Run Docker to start the application
+    - name: Run Docker to start the application!
       shell: |
         docker run -d -p 5000:5000 arielk2511/weather-app
       args:
