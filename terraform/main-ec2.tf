@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
     bucket = "my-bucket101110101"  # Your existing S3 bucket for state and .env
-    key    = "terraform-Jenkins-mini-project//terraform.tfstate"  # Path for the Terraform state file
+    key    = "terraform-Jenkins-mini-project/terraform.tfstate"  # Path for the Terraform state file
     region = "us-east-1"  # Your AWS region
-    dynamodb_table = "terraform-ec2-Jenkins-mini-project"
+    dynamodb_table = "terraform-ec2-Jenkins-mini-project-2"
     encrypt = true  # Enable encryption for the state file
   }
 }
@@ -74,10 +74,10 @@ resource "aws_instance" "Jenkins_instance-mini-project" {
               sudo yum install -y git ansible
 
               # Clone the repository containing the Ansible playbook
-              git clone https://github.com/Ariel-ksenzovsky/AWS-Jenkins-Instance.git /home/ec2-user/AWS-Jenkins-Instance
+              git clone https://github.com/Ariel-ksenzovsky/Jenkins-docker-pipeline.git /home/ec2-user/Jenkins-docker-pipeline
 
               # Run the Ansible playbook
-              ansible-playbook /home/ec2-user/AWS-Jenkins-Instance/ansible-flask-app-ec2.yml
+              ansible-playbook /home/ec2-user/Jenkins-docker-pipeline/ansible-flask-app-ec2.yml
               EOF
 
   tags = {
