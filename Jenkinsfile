@@ -87,7 +87,7 @@ pipeline {
                 script {
                     sh """
                     cd terraform
-                    terraform init
+                    terraform init -reconfigure
                     terraform apply -auto-approve
                     """
                 }
